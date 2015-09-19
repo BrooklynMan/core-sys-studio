@@ -1,3 +1,5 @@
+// with code from: sean huges, marco weibo 
+
 #include <SoftwareSerial.h>
 
 SoftwareSerial xbeeSerial(2, 3);  //RX, TX
