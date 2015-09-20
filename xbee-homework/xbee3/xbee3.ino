@@ -1,25 +1,24 @@
-// with code from: sean huges, marco weibo 
+// authors: yumeng wang, adam mcbride, nico, and caio
+// with code from: sean huges, marco weibo
 
 #include <SoftwareSerial.h>
 
 SoftwareSerial xbeeSerial(2, 3);  //RX, TX
 
-const int button = 8;  //button
-const int redLed = 6;  //red led
-const int greenLed = 5;  //green led
-const int pot = 0;  //potentiometer
+const int buttonPin = 8;  //button
+const int redLedPin = 6;  //red led
+const int greenLedPin = 5;  //green led
+const int potPin = A0; //potentiometer
 
 int potVal = 0; //value of the potentiometer
-int buttonState = LOW;  //starting value of button
+int buttonState = HIGH;  //starting value of button
 
-//String friendMessage = "
-String myName0 = "Adam ";
-String myName1 = "Nico ";
-String myName2 = "Caio ";
-String myName3 = "Adam ";
-String ender = "\n";
+const char myName0[] = "Adam ";
+const char myName1[] = "Nico ";
+const char myName2[] = "Caio ";
+const char myName3[] = "Adam ";
 
-String groupName[] = { myName0, myName1, myName2, myName3 };
+const char* const groupName[] = { myName0, myName1, myName2, myName3 };
 
 //String buffer = "";
 void setup() {
@@ -29,42 +28,62 @@ void setup() {
   xbeeSerial.begin(9600);
   xbeeSerial.println("Hey, it's Adam!");
 
-  pinMode(button, INPUT);
-  pinMode(redLed, OUTPUT);
-  pinMode(greenLed, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  pinMode(redLedPin, OUTPUT);
+  pinMode(greenLedPin, OUTPUT);
 
 }
 
 void loop() {
-  int buttonState = digitalRead(button);
-
-  if (buttonState == HIGH) {
-
-    potVal = analogRead(pot);
-
-    xbeeSerial.println(myName0 + potVal + ender);
-    // xbeeSerial.println(myName2 + potVal + ender);
-    // xbeeSerial.println(myName3 + potVal + ender);
-
-    digitalWrite(greenLed, HIGH);
-    delay(500);
-    digitalWrite(greenLed, LOW);
-    //delay(1000);
-  }
-
+  broadcast();
   serialCheck();
 }
 
-void serialCheck() {
-  if (xbeeSerial.available() > 0) {
-    String buffer;
-    buffer = xbeeSerial.readStringUntil('\n');  //error
-    if (buffer.startsWith(myName2, 0)) {
-      Serial.println(buffer);
-      int bright = xbeeSerial.parseInt();
-      digitalWrite(redLed, bright);
+void loop() {
+  int buttonState = digitalRead(buttonPin);
+
+  if (buttonState == LOW) {
+
+    if (xbeeSerial.available()) {
+
+      potVal = analogRead(potPin);
+
+      xbeeSerial.println(myName0 + potVal + '\n');
+
+      digitalWrite(greenLedPin, HIGH);
       delay(500);
-      digitalWrite(redLed, LOW);
+      digitalWrite(greenLedPin, LOW);
     }
+
+  }
+
+}
+
+void serialCheck() {
+
+  if (Serial.available()) {
+    
+    xbeeSerial.write(Serial.read());
+    String buffer;
+
+    //Serial.println("work!");
+
+    buffer = xbeeSerial.readStringUntil('\n');
+
+    for (int i = 0; i < 4; i++) {
+      if (buffer.startsWith(groupName[i], 0)) {
+        Serial.println(buffer);
+        int brightness = xbeeSerial.parseInt();
+        digitalWrite(redLedPin, brightness);
+        delay(500);
+        digitalWrite(redLedPin, LOW);
+      }
+
+    }
+    
+  } else {
+    
+    //Serial.println("not printing");
+    
   }
 }
