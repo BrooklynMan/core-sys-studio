@@ -8,4 +8,4 @@ created by adam mcbride
 
 languages:
 
-- arduino (c/c++)
+- arduino
