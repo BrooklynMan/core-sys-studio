@@ -7,5 +7,4 @@ created by adam mcbride
 
 languages:
 
-- processing
-- c++
+- arduino
