@@ -54,9 +54,7 @@ void loop() {
       delay(500);
       digitalWrite(greenLedPin, LOW);
     }
-
   }
-
 }
 
 void serialCheck() {
@@ -78,9 +76,7 @@ void serialCheck() {
         delay(500);
         digitalWrite(redLedPin, LOW);
       }
-
     }
-    
   } else {
     
     //Serial.println("not printing");
