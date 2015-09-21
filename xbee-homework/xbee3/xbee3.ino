@@ -1,5 +1,5 @@
 // authors: yumeng wang, adam mcbride, nico, and caio
-// with code from: sean huges, marco weibo
+// with code from: sean huges, marco weibel
 
 #include <SoftwareSerial.h>
 
